@@ -4,6 +4,7 @@ typedef struct obj Obj;
 
 struct obj {
     float* da_verts;
+    int* da_indices;
 };
 
 Obj* obj_load(const char*);
