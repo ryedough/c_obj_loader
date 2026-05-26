@@ -86,6 +86,7 @@ get_f_format:
 
 void obj_free(Obj ** const obj){
     da_free((*obj)->da_verts);
+    da_free((*obj)->da_indices);
     free(*obj);
     *obj = NULL;
 }
