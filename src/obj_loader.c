@@ -39,7 +39,7 @@ Obj* obj_load(const char* path){
                 da_push(obj->da_verts, y);
                 da_push(obj->da_verts, z);
             }else if(strcmp(flag, "f") == 0){
-                int vert_idx[3] ={0};
+                unsigned int vert_idx[3] ={0};
                 int sscanf_res = -1;
 get_f_format:
                 switch (f_slash_count) {
@@ -54,15 +54,15 @@ get_f_format:
                         }
                         goto get_f_format;
                     case 0:
-                        sscanf_res = sscanf(line_p, "%d %d %d", &vert_idx[0], &vert_idx[1], &vert_idx[2]);
+                        sscanf_res = sscanf(line_p, "%u %u %u", &vert_idx[0], &vert_idx[1], &vert_idx[2]);
                         break;
                     case 1:
-                        sscanf_res = sscanf(line_p, "%d/%*d %d/%*d %d/%*d", &vert_idx[0], &vert_idx[1], &vert_idx[2]);
+                        sscanf_res = sscanf(line_p, "%u/%*u %u/%*u %u/%*u", &vert_idx[0], &vert_idx[1], &vert_idx[2]);
                         break;
                     case 2:
-                        sscanf_res = sscanf(line_p, "%d/%*d/%*d %d/%*d/%*d %d/%*d/%*d", &vert_idx[0], &vert_idx[1], &vert_idx[2]);
+                        sscanf_res = sscanf(line_p, "%u/%*u/%*u %u/%*u/%*u %u/%*u/%*u", &vert_idx[0], &vert_idx[1], &vert_idx[2]);
                         if(sscanf_res <= 0){
-                            sscanf_res = sscanf(line_p, "%d//%*d %d//%*d %d//%*d", &vert_idx[0], &vert_idx[1], &vert_idx[2]);
+                            sscanf_res = sscanf(line_p, "%u//%*u %u//%*u %u//%*u", &vert_idx[0], &vert_idx[1], &vert_idx[2]);
                         }
                         break;
                     default:
@@ -75,7 +75,7 @@ get_f_format:
                     exit(1);
                 }
                 for(int i=0; i < 3; i++){
-                    da_push(obj->da_indices, vert_idx[i]);
+                    da_push(obj->da_indices, vert_idx[i] - 1);
                 }
             }
         }
@@ -92,13 +92,14 @@ void obj_free(Obj ** const obj){
 }
 
 void obj_print(Obj* obj){
-    printf("vertices \n");
-    for(int i = 0; (i+2) < da_len(obj->da_verts); i+=3){
-        printf("%f, %f, %f\n", obj->da_verts[i], obj->da_verts[i+1], obj->da_verts[i+2]);
-    }
-    printf("\n");
+    // printf("vertices \n");
+    // for(int i = 0; (i+2) < da_len(obj->da_verts); i+=3){
+    //     printf("%f, %f, %f\n", obj->da_verts[i], obj->da_verts[i+1], obj->da_verts[i+2]);
+    // }
+    // printf("\n");
     printf("indices \n");
     for(int i = 0; (i+2) < da_len(obj->da_indices); i+=3){
         printf("%d, %d, %d\n", obj->da_indices[i], obj->da_indices[i+1], obj->da_indices[i+2]);
     }
+    printf("indices %td\n", da_len(obj->da_indices));
 }
