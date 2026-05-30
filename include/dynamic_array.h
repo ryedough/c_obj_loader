@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#define INIT_CAP 2
+#define INIT_CAP 8
 
 typedef struct {
     size_t capacity;
@@ -11,11 +11,12 @@ typedef struct {
 } Header;
 
 #define da_free(arr) do{    \
+    if(!(arr)) break;       \
     free((Header*)(arr)-1); \
     (arr)=NULL;             \
 } while(0)
 
-#define da_len(arr) ((Header*)(arr)-1)->length
+#define da_len(arr) ((arr) ? ((Header*)(arr)-1)->length : 0)
 
 #define da_pop(arr, res) do{     \
     Header* h = (Header*)(arr)-1;\
@@ -27,9 +28,20 @@ typedef struct {
     res=&(arr)[h->length];       \
 }while(0)
 
+#define da_create(arr, values, n, cap) do{\
+    unsigned int capacity = (cap) > (n) ? (cap) : (n);\
+    Header *h = malloc(sizeof(Header) + (capacity * sizeof(typeof(*(values)))));\
+    h->capacity = capacity;\
+    h->length = (n);\
+    (arr) = (typeof(arr))(h+1);\
+    for(unsigned int i=0; i<(n); i++){\
+        (arr)[i] = (values)[i];\
+    }\
+} while(0)
+
 #define da_push(arr, value) do{                                                  \
     if(!arr){                                                                    \
-        Header *h = malloc(sizeof(*h) + (sizeof(*(arr)) * INIT_CAP));               \
+        Header *h = malloc(sizeof(*h) + (sizeof(value) * INIT_CAP));             \
         h->capacity=INIT_CAP;                                                    \
         h->length=0;                                                             \
         (arr) = (typeof(arr)) (h+1);                                             \
@@ -37,7 +49,7 @@ typedef struct {
     Header *h = (Header *)(arr)-1;                                               \
     if(h->capacity < h->length + 1) {                                            \
         size_t new_cap = h->capacity * 2;                                        \
-        Header *new_h = realloc(h, sizeof(*h) + (sizeof(*(arr)) * new_cap));     \
+        Header *new_h = realloc(h, sizeof(*h) + (sizeof(value) * new_cap));     \
         if(!new_h){                                                              \
             fprintf(stderr,"%s","cant reallocate array\n");                      \
             exit(1);                                                             \
