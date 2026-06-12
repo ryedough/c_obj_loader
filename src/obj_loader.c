@@ -108,7 +108,7 @@ get_f_format:
                     for(int i=0; i<3; i++){
                         size_t c_idx = idx[i]-1;
                         size_t c_uv_idx = uv_idx[i]-1;
-                        char key[20];
+                        char key[MAX_HMAP_KEY_LEN];
                         snprintf(key, sizeof(key), "%td,%td", c_idx, c_uv_idx);
 
                         HashmapElement* found_index = hmap_get(hmap_found_f, key);
@@ -122,9 +122,9 @@ get_f_format:
                             da_push(obj->da_verts, raw_verts.z);
                             da_push(obj->da_verts, raw_uv.x);
                             da_push(obj->da_verts, raw_uv.y);
-                            size_t indices = (da_len(obj->da_verts)/5)-1;
-                            da_push(obj->da_indices, indices);
-                            hmap_insert(hmap_found_f, key, (void*)indices);
+                            size_t new_indices = (da_len(obj->da_verts)/5)-1;
+                            da_push(obj->da_indices, new_indices);
+                            hmap_insert(hmap_found_f, key, (void*)new_indices);
                         }
                     }
                 }else {
