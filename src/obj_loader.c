@@ -116,7 +116,7 @@ get_f_format:
                             da_push(obj->da_indices, (size_t)found_index->value);
                         }else {
                             Vertex raw_verts = da_raw_verts[c_idx];
-                            UV raw_uv = da_raw_uvs[c_idx];
+                            UV raw_uv = da_raw_uvs[c_uv_idx];
                             da_push(obj->da_verts, raw_verts.x);
                             da_push(obj->da_verts, raw_verts.y);
                             da_push(obj->da_verts, raw_verts.z);
